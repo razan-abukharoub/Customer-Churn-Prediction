@@ -296,7 +296,7 @@ Based on the analysis, the telecom company could:
 ```text
 Customer-Churn-Prediction/
 │
-├── Customer_Churn_Prediction_Clean.ipynb
+├── Customer_Churn_Prediction.ipynb
 ├── README.md
 ├── requirements.txt
 │
