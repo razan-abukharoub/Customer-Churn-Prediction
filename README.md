@@ -153,3 +153,152 @@ max_depth = 2
 min_child_weight = 3
 subsample = 0.7
 colsample_bytree = 1.0
+
+Tuned XGBoost achieved:
+
+- Cross-validation ROC-AUC: **0.850**
+- Test ROC-AUC: **0.847**
+
+---
+
+## 🎚️ Classification Threshold Optimization
+
+The default classification threshold of 0.50 is not always the best choice for a business problem.
+
+For churn prediction, missing a customer who is likely to churn can be costly. Therefore, different thresholds were evaluated using cross-validation predictions from the training data.
+
+| Threshold | Precision | Recall | F1-score |
+|---:|---:|---:|---:|
+| 0.30 | 0.541 | 0.769 | 0.635 |
+| 0.35 | 0.574 | 0.718 | **0.638** |
+| 0.40 | 0.608 | 0.654 | 0.630 |
+| 0.45 | 0.644 | 0.602 | 0.622 |
+| 0.50 | 0.670 | 0.530 | 0.592 |
+| 0.55 | 0.696 | 0.457 | 0.551 |
+| 0.60 | 0.722 | 0.381 | 0.499 |
+
+A threshold of **0.35** was selected because it achieved the highest F1-score among the evaluated thresholds while substantially improving recall.
+
+---
+
+## 🏆 Final Model
+
+**Final Model: Tuned XGBoost + Classification Threshold = 0.35**
+
+Final test performance:
+
+| Metric | Score |
+|---|---:|
+| Accuracy | 0.784 |
+| Precision | 0.571 |
+| Recall | **0.738** |
+| F1-score | **0.644** |
+| ROC-AUC | **0.847** |
+
+At the default threshold of 0.50:
+
+- True Positives: 209
+- False Negatives: 165
+
+At the optimized threshold of 0.35:
+
+- True Positives: 276
+- False Negatives: 98
+
+The optimized threshold detected **67 additional churners** in the test set, while increasing the number of false positives.
+
+This trade-off can be useful when the cost of missing a potential churner is higher than the cost of contacting an additional customer.
+
+---
+
+## 🔎 Model Explainability with SHAP
+
+SHAP (SHapley Additive exPlanations) was used to understand which features contribute most to the model's predictions.
+
+The most important features included:
+
+1. Contract - Two year
+2. Payment Method - Electronic check
+3. Tech Support - No
+4. Paperless Billing - No
+5. Multiple Lines - No
+6. Total Charges
+7. Streaming Movies - Yes
+8. Streaming TV - Yes
+9. Online Backup - No
+10. Dependents - No
+
+The SHAP analysis also showed that:
+
+- Month-to-month contracts increase churn risk.
+- Short tenure increases churn risk.
+- Fiber optic internet service increases churn risk.
+- Higher monthly charges increase churn risk.
+- Lack of Online Security increases churn risk.
+- Electronic check payment is associated with higher churn risk.
+- Lack of Tech Support increases churn risk.
+
+---
+
+## 👤 High-Risk Customer Example
+
+The model was used to examine an individual high-risk customer.
+
+Predicted churn probability:
+
+**91.6%**
+
+Important characteristics included:
+
+- Tenure: 1 month
+- Contract: Month-to-month
+- Internet Service: Fiber optic
+- Monthly Charges: 95.10
+- Payment Method: Electronic check
+- Online Security: No
+- Tech Support: No
+
+The SHAP explanation showed that short tenure, month-to-month contract, fiber optic service, higher monthly charges, electronic check payment, and lack of additional services contributed strongly to the high-risk prediction.
+
+---
+
+## 💡 Business Recommendations
+
+Based on the analysis, the telecom company could:
+
+1. **Target month-to-month customers** with retention offers.
+2. **Focus on new customers** during their early months.
+3. **Promote additional services** such as Online Security and Tech Support.
+4. **Investigate electronic check customers** and encourage alternative payment methods.
+5. **Monitor customers with high monthly charges**, especially when combined with other risk factors.
+6. **Use risk-based retention campaigns** to prioritize customers with high predicted churn probability.
+
+---
+
+## 🛠️ Technologies Used
+
+- Python
+- Pandas
+- NumPy
+- Matplotlib
+- Seaborn
+- Scikit-learn
+- XGBoost
+- LightGBM
+- SHAP
+- Google Colab
+- Jupyter Notebook
+
+---
+
+## 📁 Project Structure
+
+```text
+Customer-Churn-Prediction/
+│
+├── Customer_Churn_Prediction_Clean.ipynb
+├── README.md
+├── requirements.txt
+│
+└── data/
+    └── Telco-Customer-Churn.csv
