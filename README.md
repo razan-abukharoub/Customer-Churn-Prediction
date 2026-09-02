@@ -153,7 +153,7 @@ max_depth = 2
 min_child_weight = 3
 subsample = 0.7
 colsample_bytree = 1.0
-
+```
 Tuned XGBoost achieved:
 
 - Cross-validation ROC-AUC: **0.850**
